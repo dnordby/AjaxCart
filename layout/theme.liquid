@@ -4,8 +4,6 @@
     {% include 'head' %}
     <!-- LOAD SHOPIFY APP JS -->
     {{ content_for_header }}
-    {{ 'app.js' | asset_url | script_tag }}
-    {{ 'style.scss' | asset_url | stylesheet_tag }}
   </head>
 
   <body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}" >
