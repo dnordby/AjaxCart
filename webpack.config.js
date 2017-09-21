@@ -10,7 +10,13 @@ module.exports = {
         loaders: [
             {
               test: /app\.scss$/,
-              loader: extractSCSS.extract(['css', 'autoprefixer', 'sass'])
+              loader: extractSCSS.extract(['css', 'autoprefixer-loader', 'sass'])
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+
+                exclude: /node_modules/
             }
         ]
     },

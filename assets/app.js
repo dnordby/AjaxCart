@@ -42,44 +42,27 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// REQUIRE ALL SCSS FROM APP.SCSS
-	__webpack_require__(1);
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./../scss/app.scss\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
-	// REQUIRE EACH JS MODULE
-	__webpack_require__(3);
-	__webpack_require__(4);
+	const AjaxCart = {
+	  settings: {},
+	  init() {
+	    console.log('AjaxCart loaded');
+	  },
+	  called() {
+	    console.log("CALLED");
+	  }
+	};
 
+	window.AjaxCart = AjaxCart;
 
-/***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 2 */,
-/* 3 */
-/***/ function(module, exports) {
-
-	function exportHome() {
-	  console.log("It works from home.js.");
-	}
-
-	module.exports = exportHome();
+	$(function() {
+	  AjaxCart.init();
+	});
 
 
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	function exportAbout() {
-	  console.log("It works from about.js.");
-	}
-
-	module.exports = exportAbout();
-
-
-/***/ }
+/***/ })
 /******/ ]);

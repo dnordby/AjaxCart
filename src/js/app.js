@@ -5,7 +5,7 @@ const AjaxCart = {
   settings: {},
   init() {
     console.log('AjaxCart loaded');
-  }
+  },
   called() {
     console.log("CALLED");
   }
