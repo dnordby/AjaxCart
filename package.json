@@ -1,0 +1,32 @@
+{
+  "name": "shopify-base",
+  "version": "1.0.0",
+  "description": "V+V Base Shopify Theme",
+  "main": "entry.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "jquery": "^3.1.1"
+  },
+  "devDependencies": {
+    "css-loader": "^0.26.0",
+    "node-sass": "^3.13.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnordby/shopify-base.git"
+  },
+  "author": "daniel@verbalplusvisual.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dnordby/shopify-base/issues"
+  },
+  "homepage": "https://github.com/dnordby/shopify-base#readme"
+}
