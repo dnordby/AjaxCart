@@ -1,0 +1,13 @@
+*.DS_Store
+*.swp
+*.swo
+*.log
+npm-debug.log*
+.eslintcache
+.sass-cache/
+*.css.map
+assets/app.js
+assets/style.scss.liquid
+
+node_modules
+config.yml
