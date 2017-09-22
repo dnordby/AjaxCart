@@ -14,53 +14,45 @@ const AjaxCart = {
     var completedText = $(button).attr('value');
     var cartError = false;
     var error = '';
+    var returnValue = '';
     $(button).attr('value', 'adding...').prop('disabled', true);
 
-    var actionValue = $.ajax({
+    var product = $.ajax({
       url: '/cart/add.js',
       type: 'POST',
       data: cartForm,
       dataType: 'json'
-    })
-    .done(function(data) {
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-      error = jqXHR.responseJSON.description;
-      cartError = true;
-    })
-    .always(function(data){
-      if (!cartError) {
-        AjaxCart.getCart();
-      }
     });
-    $(button).attr('value', completedText).prop('disabled', false);
-    console.log(actionValue);
-  },
-  getCart() {
-    var value = $.ajax({
+    var cart = $.ajax({
       url: '/cart.js',
       type: 'GET',
       dataType: 'json'
-    })
-    .done(function() {
-    })
-    .fail(function() {
-    })
-    .always(function(data) {
     });
-    console.log(value);
-  }
+
+    product.done(function(productData){
+      var product = productData;
+      cart.done(function(cartData){
+        var cart = cartData;
+        console.log(cart);
+        console.log(product);
+      });
+    })
+    .fail(function(jqXHR, textStatus, errorThrown){
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    });
+
+    $(button).attr('value', completedText).prop('disabled', false);
+  },
 };
 
 window.AjaxCart = AjaxCart;
 
 $(function() {
-  AjaxCart.init();
-
-
   $('#add').click(function(e){
     e.preventDefault();
     var form = $(this).closest('form');
-    AjaxCart.addToCart(form);
+    var response = AjaxCart.addToCart(form);
   });
 });

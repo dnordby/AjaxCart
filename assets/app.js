@@ -70,14 +70,14 @@
 "use strict";
 
 
-var _jquery = __webpack_require__(6);
+var _jquery = __webpack_require__(1);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // REQUIRE ALL SCSS FROM APP.SCSS
-__webpack_require__(1);
+__webpack_require__(2);
 
 // IMPORT DEPENDENCIES
 
@@ -92,58 +92,50 @@ var AjaxCart = {
     var completedText = (0, _jquery2.default)(button).attr('value');
     var cartError = false;
     var error = '';
+    var returnValue = '';
     (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
 
-    var actionValue = _jquery2.default.ajax({
+    var product = _jquery2.default.ajax({
       url: '/cart/add.js',
       type: 'POST',
       data: cartForm,
       dataType: 'json'
-    }).done(function (data) {}).fail(function (jqXHR, textStatus, errorThrown) {
-      error = jqXHR.responseJSON.description;
-      cartError = true;
-    }).always(function (data) {
-      if (!cartError) {
-        AjaxCart.getCart();
-      }
     });
-    (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
-    console.log(actionValue);
-  },
-  getCart: function getCart() {
-    var value = _jquery2.default.ajax({
+    var cart = _jquery2.default.ajax({
       url: '/cart.js',
       type: 'GET',
       dataType: 'json'
-    }).done(function () {}).fail(function () {}).always(function (data) {});
-    console.log(value);
+    });
+
+    product.done(function (productData) {
+      var product = productData;
+      cart.done(function (cartData) {
+        var cart = cartData;
+        console.log(cart);
+        console.log(product);
+      });
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    });
+
+    (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
   }
 };
 
 window.AjaxCart = AjaxCart;
 
 (0, _jquery2.default)(function () {
-  AjaxCart.init();
-
   (0, _jquery2.default)('#add').click(function (e) {
     e.preventDefault();
     var form = (0, _jquery2.default)(this).closest('form');
-    AjaxCart.addToCart(form);
+    var response = AjaxCart.addToCart(form);
   });
 });
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10401,6 +10393,12 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
