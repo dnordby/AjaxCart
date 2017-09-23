@@ -90,9 +90,7 @@ var AjaxCart = {
 
     var cartForm = (0, _jquery2.default)(form).serialize();
     var completedText = (0, _jquery2.default)(button).attr('value');
-    var cartError = false;
-    var error = '';
-    var returnValue = '';
+    var returnValue = _jquery2.default.Deferred();
     (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
 
     var product = _jquery2.default.ajax({
@@ -101,26 +99,19 @@ var AjaxCart = {
       data: cartForm,
       dataType: 'json'
     });
-    var cart = _jquery2.default.ajax({
-      url: '/cart.js',
-      type: 'GET',
-      dataType: 'json'
-    });
 
-    product.done(function (productData) {
-      var product = productData;
-      cart.done(function (cartData) {
-        var cart = cartData;
-        console.log(cart);
-        console.log(product);
-      });
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-      console.log(textStatus);
-      console.log(errorThrown);
+    product.then(function () {
+      returnValue.resolve(_jquery2.default.ajax({
+        url: '/cart.js',
+        type: 'GET',
+        dataType: 'json'
+      }));
+    }, function (jqXHR, textStatus, errorThrown) {
+      returnValue.resolve(jqXHR.responseJSON.description);
     });
 
     (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
+    return returnValue;
   }
 };
 
@@ -131,6 +122,7 @@ window.AjaxCart = AjaxCart;
     e.preventDefault();
     var form = (0, _jquery2.default)(this).closest('form');
     var response = AjaxCart.addToCart(form);
+    console.log(response);
   });
 });
 
