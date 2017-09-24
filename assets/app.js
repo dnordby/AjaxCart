@@ -83,14 +83,15 @@ __webpack_require__(2);
 
 
 var AjaxCart = {
-  settings: {},
-  init: function init() {},
-  addToCart: function addToCart(form) {
-    var button = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : (0, _jquery2.default)('form').find('input[type=submit]');
 
+  // ADD ITEM TO CART
+  // RETURN ERROR, OR CART OBJECT
+  addToCart: function addToCart(form, fn) {
+    var button = (0, _jquery2.default)('form').find('input[type=submit]');
     var cartForm = (0, _jquery2.default)(form).serialize();
     var completedText = (0, _jquery2.default)(button).attr('value');
-    var returnValue = '';
+    var cart = getCart();
+    var product = productAdded();
     (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
 
     function productAdded() {
@@ -109,24 +110,71 @@ var AjaxCart = {
       });
     }
 
-    var cart = getCart().done(function (cartData) {
-      return cartData;
+    _jquery2.default.when(cart, product).done(function (cartData, productData) {
+      fn(cartData);
+    }).fail(function (error) {
+      fn(error.responseJSON.description);
     });
 
     (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
+  },
+
+
+  // GET THE CART
+  getCart: function getCart() {
+    var cart = getCart().done(function (data) {
+      return data;
+    });
+
+    function getCart() {
+      return _jquery2.default.ajax({
+        url: '/cart.js',
+        type: 'GET',
+        dataType: 'json'
+      });
+    }
+
     return cart;
+  },
+
+
+  // REMOVE ALL QUANTITIES OF VARIANT FROM CART
+  removeFromCart: function removeFromCart(variantId) {
+    var variantId = parseInt(variantId);
+    var updateHash = { quantity: 0, id: variantId };
+    var updatedCart = updateCart().done(function (data) {
+      return data;
+    });
+
+    function updateCart() {
+      return _jquery2.default.ajax({
+        url: '/cart/change.js',
+        type: 'POST',
+        dataType: 'json',
+        data: updateHash
+      });
+    }
+
+    return updatedCart;
   }
 };
 
 window.AjaxCart = AjaxCart;
 
 (0, _jquery2.default)(function () {
+  // ADD TO CART
   (0, _jquery2.default)('#add').click(function (e) {
     e.preventDefault();
     var form = (0, _jquery2.default)(this).closest('form');
-    var response = AjaxCart.addToCart(form);
-    console.log(response);
+    var response = '';
+    AjaxCart.addToCart(form, function (data) {
+      console.log(data);
+    });
   });
+
+  // GET CART
+  var getCart = AjaxCart.getCart();
+  console.log(getCart);
 });
 
 /***/ }),
