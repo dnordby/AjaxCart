@@ -90,28 +90,31 @@ var AjaxCart = {
 
     var cartForm = (0, _jquery2.default)(form).serialize();
     var completedText = (0, _jquery2.default)(button).attr('value');
-    var returnValue = _jquery2.default.Deferred();
+    var returnValue = '';
     (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
 
-    var product = _jquery2.default.ajax({
-      url: '/cart/add.js',
-      type: 'POST',
-      data: cartForm,
-      dataType: 'json'
-    });
-
-    product.then(function () {
-      returnValue.resolve(_jquery2.default.ajax({
+    function productAdded() {
+      return _jquery2.default.ajax({
+        url: '/cart/add.js',
+        type: 'POST',
+        data: cartForm,
+        dataType: 'json'
+      });
+    }
+    function getCart() {
+      return _jquery2.default.ajax({
         url: '/cart.js',
         type: 'GET',
         dataType: 'json'
-      }));
-    }, function (jqXHR, textStatus, errorThrown) {
-      returnValue.resolve(jqXHR.responseJSON.description);
+      });
+    }
+
+    var cart = getCart().done(function (cartData) {
+      return cartData;
     });
 
     (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
-    return returnValue;
+    return cart;
   }
 };
 

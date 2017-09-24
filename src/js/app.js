@@ -12,35 +12,32 @@ const AjaxCart = {
   addToCart(form, button = $('form').find('input[type=submit]')) {
     var cartForm = $(form).serialize();
     var completedText = $(button).attr('value');
-    var returnValue = $.Deferred();
+    var returnValue = '';
     $(button).attr('value', 'adding...').prop('disabled', true);
 
-    var product = $.ajax({
-      url: '/cart/add.js',
-      type: 'POST',
-      data: cartForm,
-      dataType: 'json'
+    function productAdded() {
+      return $.ajax({
+        url: '/cart/add.js',
+        type: 'POST',
+        data: cartForm,
+        dataType: 'json'
+      });
+    }
+    function getCart() {
+      return $.ajax({
+        url: '/cart.js',
+        type: 'GET',
+        dataType: 'json'
+      });
+    }
+
+    var cart = getCart().done(function(cartData){
+      return(cartData);
     });
 
-    product
-    .then(
-      function(){
-        returnValue.resolve(
-          $.ajax({
-            url: '/cart.js',
-            type: 'GET',
-            dataType: 'json'
-          })
-        );
-      },
-      function(jqXHR, textStatus, errorThrown){
-        returnValue.resolve(jqXHR.responseJSON.description);
-      }
-    );
-
     $(button).attr('value', completedText).prop('disabled', false);
-    return(returnValue);
-  }
+    return(cart);
+  },
 };
 
 window.AjaxCart = AjaxCart;
