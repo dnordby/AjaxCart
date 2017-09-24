@@ -156,6 +156,49 @@ var AjaxCart = {
     }
 
     return updatedCart;
+  },
+
+
+  // CHANGE QUANTITY GIVEN VARIANT ID
+  changeQuantity: function changeQuantity(variantId, quantity) {
+    var updateHash = '{"updates": {"' + variantId + '": ' + itemQuantity + '}}';
+    updateHash = JSON.parse(updateHash);
+    var updatedCart = quantityUpdate().done(function (data) {
+      return data;
+    });
+
+    function quantityUpdate() {
+      return _jquery2.default.ajax({
+        url: '/cart/update.js',
+        type: 'POST',
+        dataType: 'json',
+        data: updateHash
+      });
+    }
+
+    return updatedCart;
+  },
+
+
+  // UPDATE QUANTITY CHECK
+  updateQuantity: function updateQuantity(action, currentQuantity, variantId, productId) {
+    var action = action;
+    var quantity = currentQuantity;
+    var variantId = variantId;
+    var productId = productId;
+
+    if (quantity == 1 && action == 'subtract') {
+      // INVOKE REMOVE FROM CART
+      AjaxCart.removeFromCart(variantId);
+    } else if (quantity > 1 && action == 'subtract') {
+      // UPDATE CART QUANTITY
+      quantity--;
+      AjaxCart.changeQuantity(variantId, quantity);
+    } else if (action == 'increase') {
+      // CHECK FOR AVAILABILITY, AND THEN PROCESS
+      // quantity++;
+      // variantAvailable(productId, variantId, quantity)
+    }
   }
 };
 
