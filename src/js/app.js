@@ -1,17 +1,15 @@
-// REQUIRE ALL SCSS FROM APP.SCSS
 require("./../scss/app.scss");
 
-// IMPORT DEPENDENCIES
 import $ from 'jquery';
 import AjaxCart from '../js/modules/cart';
-import product from '../js/pages/product';
+// import product from '../js/pages/product';
 
 const CartJs = {
   settings: {},
   init() {
-    if ($('body').hasClass('template-product')) {
-      product();
-    }
+    // if ($('body').hasClass('template-product')) {
+    //   product();
+    // }
   }
 };
 

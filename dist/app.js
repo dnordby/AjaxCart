@@ -60,53 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _jquery = __webpack_require__(1);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _cart = __webpack_require__(8);
-
-var _cart2 = _interopRequireDefault(_cart);
-
-var _product = __webpack_require__(7);
-
-var _product2 = _interopRequireDefault(_product);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// REQUIRE ALL SCSS FROM APP.SCSS
-__webpack_require__(2);
-
-// IMPORT DEPENDENCIES
-
-
-var CartJs = {
-  settings: {},
-  init: function init() {
-    if ((0, _jquery2.default)('body').hasClass('template-product')) {
-      (0, _product2.default)();
-    }
-  }
-};
-
-window.CartJs = CartJs;
-
-(0, _jquery2.default)(function () {
-  CartJs.init();
-});
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10366,134 +10324,49 @@ return jQuery;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function () {
-  // ***************** //
-  // ** ADD TO CART ** //
-  // ***************** //
-
-  (0, _jquery2.default)('#add').click(function (e) {
-    e.preventDefault();
-    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
-    var form = (0, _jquery2.default)(this).closest('form');
-    var variantId = (0, _jquery2.default)(form).find('.js-variant-id').val();
-    var variantTitle = (0, _jquery2.default)(form).find('.js-variant-title').val();
-    var variantPrice = (0, _jquery2.default)(form).find('.js-variant-price').val();
-    var availableQuantity = (0, _jquery2.default)(form).find('.js-available-quantity').val();
-    var newLineItem = '<div class="js-line-item">\n                          <input type="hidden" value=' + variantId + ' class="js-variant-id">\n                          <input type="hidden" value="1" class="js-quantity">\n                          <input type="hidden" value=' + availableQuantity + ' class="js-available-quantity">\n                          <input type="hidden" value=' + variantPrice + ' class="js-unit-price">\n                          <h3>' + variantTitle + '</h3>\n                          <p class="js-visual-quantity">Quantity: 1</p>\n                          <p>Unit Price: ' + variantPrice + '</p>\n                          <p class="js-total-price">Total Price: ' + variantPrice + '</p>\n                          <p class="js-subtract pointer js-update" data-action="subtract">SUBTRACT</p>\n                          <p class="js-add pointer js-update" data-action="increase">ADD</p>\n                          <p class="js-remove pointer">REMOVE</p>\n                        </div>';
-
-    // ADD TO CART ACCEPTS A FORM, BUTTON (OPTIONAL), AND A CALLBACK FUNCTION
-    // RETURNS CART OBJECT OR ADD TO CART ERROR
-    AjaxCart.addToCart(form, (0, _jquery2.default)(this), function (cartOrError) {
-      (0, _jquery2.default)('.cart-drawer').prepend(newLineItem);
-      console.log(cartOrError);
-    });
-  });
-
-  // ************** //
-  // ** GET CART ** //
-  // ************** //
-
-  // ACCEPTS NO VALUES/ARGUMENTS
-  // RETURNS CART OBJECT
-  var getCart = AjaxCart.getCart();
-  console.log(getCart);
-
-  // ********************** //
-  // ** REMOVE LINE ITEM ** //
-  // ********************** //
-
-  (0, _jquery2.default)(document).on('click', '.js-remove', function () {
-    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
-    var line = (0, _jquery2.default)(this).closest('.js-line-item');
-    var variantId = (0, _jquery2.default)(line).find('.js-variant-id').val();
-
-    // REQUIRES VARIANT ID
-    // RETURNS UPDATED CART OBJECT
-    var updatedCart = AjaxCart.removeFromCart(variantId);
-
-    (0, _jquery2.default)(line).remove();
-
-    console.log(updatedCart);
-  });
-
-  // ********************* //
-  // ** UPDATE QUANTITY ** //
-  // ********************* //
-
-  (0, _jquery2.default)(document).on('click', '.js-update', function () {
-    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
-    var action = (0, _jquery2.default)(this).data('action');
-    var currentQuantity = parseInt((0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val());
-    var variantId = (0, _jquery2.default)(this).closest('.js-line-item').find('.js-variant-id').val();
-    var availableQuantity = (0, _jquery2.default)(this).closest('.js-line-item').find('.js-available-quantity').val();
-    console.log((0, _jquery2.default)(this));
-    console.log(action);
-
-    // REQUIRES ACTION ('increase' or 'subtract' ONLY), VARIANT ID, CURRENT QUANTITY IN CART, AND TOTAL AVAILABLE
-    // RETURNS UPDATED CART OBJECT
-    var updatedCart = AjaxCart.updateQuantity(action, variantId, currentQuantity, availableQuantity);
-
-    // VISUAL UPDATES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
-    if (currentQuantity == 1 && action == 'subtract') {
-      (0, _jquery2.default)(this).closest('.js-line-item').remove();
-      console.log(updatedCart);
-    } else if (currentQuantity > 1 && action == 'subtract') {
-      var visualQuantity = currentQuantity - 1;
-      var updatedTotal = Number((0, _jquery2.default)(this).closest('.js-line-item').find('.js-unit-price').val().replace(/[^0-9\.-]+/g, "")) * 100 * visualQuantity;
-      updatedTotal = '$' + (updatedTotal / 100).toFixed(2).toString();
-      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-visual-quantity').text('Quantity: ' + visualQuantity.toString());
-      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-total-price').text('Total Price: ' + updatedTotal);
-      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val(visualQuantity);
-      console.log(updatedCart);
-    } else if (action == 'increase') {
-      var visualQuantity = currentQuantity + 1;
-      var updatedTotal = Number((0, _jquery2.default)(this).closest('.js-line-item').find('.js-unit-price').val().replace(/[^0-9\.-]+/g, "")) * 100 * visualQuantity;
-      if (visualQuantity <= availableQuantity) {
-        updatedTotal = '$' + (updatedTotal / 100).toFixed(2).toString();
-        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-visual-quantity').text('Quantity: ' + visualQuantity.toString());
-        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-total-price').text('Total Price: ' + updatedTotal);
-        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val(visualQuantity);
-      } else {
-        alert(updatedCart);
-      }
-    }
-  });
-};
-
-var _jquery = __webpack_require__(1);
+var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _cart = __webpack_require__(2);
+
+var _cart2 = _interopRequireDefault(_cart);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+__webpack_require__(3);
+
+// import product from '../js/pages/product';
+
+var CartJs = {
+  settings: {},
+  init: function init() {
+    // if ($('body').hasClass('template-product')) {
+    //   product();
+    // }
+  }
+};
+
+window.CartJs = CartJs;
+
+(0, _jquery2.default)(function () {
+  CartJs.init();
+});
+
 /***/ }),
-/* 8 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _jquery = __webpack_require__(1);
+var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -10642,6 +10515,12 @@ var AjaxCart = {
 };
 
 window.AjaxCart = AjaxCart;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
