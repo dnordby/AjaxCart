@@ -74,6 +74,14 @@ var _jquery = __webpack_require__(1);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _cart = __webpack_require__(8);
+
+var _cart2 = _interopRequireDefault(_cart);
+
+var _product = __webpack_require__(7);
+
+var _product2 = _interopRequireDefault(_product);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // REQUIRE ALL SCSS FROM APP.SCSS
@@ -82,142 +90,19 @@ __webpack_require__(2);
 // IMPORT DEPENDENCIES
 
 
-var AjaxCart = {
-
-  // ADD ITEM TO CART
-  // RETURN ERROR, OR CART OBJECT
-  addToCart: function addToCart(form, fn) {
-    var button = (0, _jquery2.default)('form').find('input[type=submit]');
-    var cartForm = (0, _jquery2.default)(form).serialize();
-    var completedText = (0, _jquery2.default)(button).attr('value');
-    var cart = getCart();
-    var product = productAdded();
-    (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
-
-    function productAdded() {
-      return _jquery2.default.ajax({
-        url: '/cart/add.js',
-        type: 'POST',
-        data: cartForm,
-        dataType: 'json'
-      });
-    }
-    function getCart() {
-      return _jquery2.default.ajax({
-        url: '/cart.js',
-        type: 'GET',
-        dataType: 'json'
-      });
-    }
-
-    _jquery2.default.when(cart, product).done(function (cartData, productData) {
-      fn(cartData);
-    }).fail(function (error) {
-      fn(error.responseJSON.description);
-    });
-
-    (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
-  },
-
-
-  // GET THE CART
-  getCart: function getCart() {
-    var cart = getCart().done(function (data) {
-      return data;
-    });
-
-    function getCart() {
-      return _jquery2.default.ajax({
-        url: '/cart.js',
-        type: 'GET',
-        dataType: 'json'
-      });
-    }
-
-    return cart;
-  },
-
-
-  // REMOVE ALL QUANTITIES OF VARIANT FROM CART
-  removeFromCart: function removeFromCart(variantId) {
-    var variantId = parseInt(variantId);
-    var updateHash = { quantity: 0, id: variantId };
-    var updatedCart = updateCart().done(function (data) {
-      return data;
-    });
-
-    function updateCart() {
-      return _jquery2.default.ajax({
-        url: '/cart/change.js',
-        type: 'POST',
-        dataType: 'json',
-        data: updateHash
-      });
-    }
-
-    return updatedCart;
-  },
-
-
-  // CHANGE QUANTITY GIVEN VARIANT ID
-  changeQuantity: function changeQuantity(variantId, quantity) {
-    var updateHash = '{"updates": {"' + variantId + '": ' + itemQuantity + '}}';
-    updateHash = JSON.parse(updateHash);
-    var updatedCart = quantityUpdate().done(function (data) {
-      return data;
-    });
-
-    function quantityUpdate() {
-      return _jquery2.default.ajax({
-        url: '/cart/update.js',
-        type: 'POST',
-        dataType: 'json',
-        data: updateHash
-      });
-    }
-
-    return updatedCart;
-  },
-
-
-  // UPDATE QUANTITY CHECK
-  updateQuantity: function updateQuantity(action, currentQuantity, variantId, productId) {
-    var action = action;
-    var quantity = currentQuantity;
-    var variantId = variantId;
-    var productId = productId;
-
-    if (quantity == 1 && action == 'subtract') {
-      // INVOKE REMOVE FROM CART
-      AjaxCart.removeFromCart(variantId);
-    } else if (quantity > 1 && action == 'subtract') {
-      // UPDATE CART QUANTITY
-      quantity--;
-      AjaxCart.changeQuantity(variantId, quantity);
-    } else if (action == 'increase') {
-      // CHECK FOR AVAILABILITY, AND THEN PROCESS
-      // quantity++;
-      // variantAvailable(productId, variantId, quantity)
+var CartJs = {
+  settings: {},
+  init: function init() {
+    if ((0, _jquery2.default)('body').hasClass('template-product')) {
+      (0, _product2.default)();
     }
   }
 };
 
-window.AjaxCart = AjaxCart;
+window.CartJs = CartJs;
 
 (0, _jquery2.default)(function () {
-  // ADD TO CART
-  (0, _jquery2.default)('#add').click(function (e) {
-    e.preventDefault();
-    var form = (0, _jquery2.default)(this).closest('form');
-    var response = '';
-    AjaxCart.addToCart(form, function (data) {
-      console.log(data);
-    });
-  });
-
-  // GET CART
-  var getCart = AjaxCart.getCart();
-  console.log(getCart);
+  CartJs.init();
 });
 
 /***/ }),
@@ -10485,6 +10370,278 @@ return jQuery;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function () {
+  // ***************** //
+  // ** ADD TO CART ** //
+  // ***************** //
+
+  (0, _jquery2.default)('#add').click(function (e) {
+    e.preventDefault();
+    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
+    var form = (0, _jquery2.default)(this).closest('form');
+    var variantId = (0, _jquery2.default)(form).find('.js-variant-id').val();
+    var variantTitle = (0, _jquery2.default)(form).find('.js-variant-title').val();
+    var variantPrice = (0, _jquery2.default)(form).find('.js-variant-price').val();
+    var availableQuantity = (0, _jquery2.default)(form).find('.js-available-quantity').val();
+    var newLineItem = '<div class="js-line-item">\n                          <input type="hidden" value=' + variantId + ' class="js-variant-id">\n                          <input type="hidden" value="1" class="js-quantity">\n                          <input type="hidden" value=' + availableQuantity + ' class="js-available-quantity">\n                          <input type="hidden" value=' + variantPrice + ' class="js-unit-price">\n                          <h3>' + variantTitle + '</h3>\n                          <p class="js-visual-quantity">Quantity: 1</p>\n                          <p>Unit Price: ' + variantPrice + '</p>\n                          <p class="js-total-price">Total Price: ' + variantPrice + '</p>\n                          <p class="js-subtract pointer js-update" data-action="subtract">SUBTRACT</p>\n                          <p class="js-add pointer js-update" data-action="increase">ADD</p>\n                          <p class="js-remove pointer">REMOVE</p>\n                        </div>';
+
+    // ADD TO CART ACCEPTS A FORM, BUTTON (OPTIONAL), AND A CALLBACK FUNCTION
+    // RETURNS CART OBJECT OR ADD TO CART ERROR
+    AjaxCart.addToCart(form, (0, _jquery2.default)(this), function (cartOrError) {
+      (0, _jquery2.default)('.cart-drawer').prepend(newLineItem);
+      console.log(cartOrError);
+    });
+  });
+
+  // ************** //
+  // ** GET CART ** //
+  // ************** //
+
+  // ACCEPTS NO VALUES/ARGUMENTS
+  // RETURNS CART OBJECT
+  var getCart = AjaxCart.getCart();
+  console.log(getCart);
+
+  // ********************** //
+  // ** REMOVE LINE ITEM ** //
+  // ********************** //
+
+  (0, _jquery2.default)(document).on('click', '.js-remove', function () {
+    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
+    var line = (0, _jquery2.default)(this).closest('.js-line-item');
+    var variantId = (0, _jquery2.default)(line).find('.js-variant-id').val();
+
+    // REQUIRES VARIANT ID
+    // RETURNS UPDATED CART OBJECT
+    var updatedCart = AjaxCart.removeFromCart(variantId);
+
+    (0, _jquery2.default)(line).remove();
+
+    console.log(updatedCart);
+  });
+
+  // ********************* //
+  // ** UPDATE QUANTITY ** //
+  // ********************* //
+
+  (0, _jquery2.default)(document).on('click', '.js-update', function () {
+    // VARIABLES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
+    var action = (0, _jquery2.default)(this).data('action');
+    var currentQuantity = parseInt((0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val());
+    var variantId = (0, _jquery2.default)(this).closest('.js-line-item').find('.js-variant-id').val();
+    var availableQuantity = (0, _jquery2.default)(this).closest('.js-line-item').find('.js-available-quantity').val();
+    console.log((0, _jquery2.default)(this));
+    console.log(action);
+
+    // REQUIRES ACTION ('increase' or 'subtract' ONLY), VARIANT ID, CURRENT QUANTITY IN CART, AND TOTAL AVAILABLE
+    // RETURNS UPDATED CART OBJECT
+    var updatedCart = AjaxCart.updateQuantity(action, variantId, currentQuantity, availableQuantity);
+
+    // VISUAL UPDATES DEPEND ON HTML STRUCTURE, MAY BE DIFFERENT FROM PROJECT-TO-PROJECT
+    if (currentQuantity == 1 && action == 'subtract') {
+      (0, _jquery2.default)(this).closest('.js-line-item').remove();
+      console.log(updatedCart);
+    } else if (currentQuantity > 1 && action == 'subtract') {
+      var visualQuantity = currentQuantity - 1;
+      var updatedTotal = Number((0, _jquery2.default)(this).closest('.js-line-item').find('.js-unit-price').val().replace(/[^0-9\.-]+/g, "")) * 100 * visualQuantity;
+      updatedTotal = '$' + (updatedTotal / 100).toFixed(2).toString();
+      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-visual-quantity').text('Quantity: ' + visualQuantity.toString());
+      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-total-price').text('Total Price: ' + updatedTotal);
+      (0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val(visualQuantity);
+      console.log(updatedCart);
+    } else if (action == 'increase') {
+      var visualQuantity = currentQuantity + 1;
+      var updatedTotal = Number((0, _jquery2.default)(this).closest('.js-line-item').find('.js-unit-price').val().replace(/[^0-9\.-]+/g, "")) * 100 * visualQuantity;
+      if (visualQuantity <= availableQuantity) {
+        updatedTotal = '$' + (updatedTotal / 100).toFixed(2).toString();
+        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-visual-quantity').text('Quantity: ' + visualQuantity.toString());
+        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-total-price').text('Total Price: ' + updatedTotal);
+        (0, _jquery2.default)(this).closest('.js-line-item').find('.js-quantity').val(visualQuantity);
+      } else {
+        alert(updatedCart);
+      }
+    }
+  });
+};
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AjaxCart = {
+
+  // ADD ITEM TO CART
+  // RETURN ERROR, OR CART OBJECT
+  addToCart: function addToCart(form) {
+    var button = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : (0, _jquery2.default)('form').find('input[type=submit]');
+    var fn = arguments[2];
+
+    var button = button;
+    var cartForm = (0, _jquery2.default)(form).serialize();
+    var completedText = (0, _jquery2.default)(button).attr('value');
+    var cart = getCart();
+    var product = productAdded();
+    (0, _jquery2.default)(button).attr('value', 'adding...').prop('disabled', true);
+
+    function productAdded() {
+      return _jquery2.default.ajax({
+        url: '/cart/add.js',
+        type: 'POST',
+        data: cartForm,
+        dataType: 'json'
+      });
+    }
+    function getCart() {
+      return _jquery2.default.ajax({
+        url: '/cart.js',
+        type: 'GET',
+        dataType: 'json'
+      });
+    }
+
+    _jquery2.default.when(cart, product).done(function (cartData, productData) {
+      fn(cartData);
+    }).fail(function (error) {
+      fn(error.responseJSON.description);
+    });
+
+    (0, _jquery2.default)(button).attr('value', completedText).prop('disabled', false);
+  },
+
+
+  // GET THE CART
+  getCart: function getCart() {
+    var cart = getCart().done(function (data) {
+      return data;
+    });
+
+    function getCart() {
+      return _jquery2.default.ajax({
+        url: '/cart.js',
+        type: 'GET',
+        dataType: 'json'
+      });
+    }
+
+    return cart;
+  },
+
+
+  // REMOVE ALL QUANTITIES OF VARIANT FROM CART
+  removeFromCart: function removeFromCart(variantId) {
+    var variantId = parseInt(variantId);
+    var updateHash = { quantity: 0, id: variantId };
+    var updatedCart = updateCart().done(function (data) {
+      return data;
+    });
+
+    function updateCart() {
+      return _jquery2.default.ajax({
+        url: '/cart/change.js',
+        type: 'POST',
+        dataType: 'json',
+        data: updateHash
+      });
+    }
+
+    return updatedCart;
+  },
+
+
+  // CHANGE QUANTITY GIVEN VARIANT ID
+  changeQuantity: function changeQuantity(variantId, quantity) {
+    var variantId = parseInt(variantId);
+    var itemQuantity = parseInt(quantity);
+    var updateHash = '{"updates": {"' + variantId + '": ' + itemQuantity + '}}';
+    updateHash = JSON.parse(updateHash);
+    var updatedCart = quantityUpdate().done(function (data) {
+      return data;
+    });
+
+    function quantityUpdate() {
+      return _jquery2.default.ajax({
+        url: '/cart/update.js',
+        type: 'POST',
+        dataType: 'json',
+        data: updateHash
+      });
+    }
+
+    return updatedCart;
+  },
+
+
+  // UPDATE QUANTITY CHECK
+  updateQuantity: function updateQuantity(action, variantId, currentQuantity, availableQuantity) {
+    var action = action;
+    var variantId = variantId;
+    var currentQuantity = currentQuantity;
+    var availableQuantity = availableQuantity;
+
+    if (currentQuantity == 1 && action == 'subtract') {
+      // INVOKE REMOVE FROM CART
+      return AjaxCart.removeFromCart(variantId);
+    } else if (currentQuantity > 1 && action == 'subtract') {
+      // UPDATE CART QUANTITY
+      currentQuantity--;
+      return AjaxCart.changeQuantity(variantId, currentQuantity);
+    } else if (action == 'increase') {
+      // CHECK FOR AVAILABILITY, AND THEN PROCESS
+      currentQuantity++;
+      return AjaxCart.variantAvailable(variantId, currentQuantity, availableQuantity);
+    }
+  },
+
+
+  // ENSURE AVAILABILITY
+  variantAvailable: function variantAvailable(variantId, requestedQuantity, availableQuantity) {
+    var variantId = parseInt(variantId);
+    var availableQuantity = parseInt(availableQuantity);
+    var requestedQuantity = parseInt(requestedQuantity);
+    var error = '';
+
+    if (availableQuantity <= 0) {
+      return error = 'No additional product in stock.';
+    } else if (requestedQuantity > availableQuantity) {
+      return error = 'No additional product in stock.';
+    } else if (availableQuantity >= requestedQuantity) {
+      return AjaxCart.changeQuantity(variantId, requestedQuantity);
+    }
+  }
+};
+
+window.AjaxCart = AjaxCart;
 
 /***/ })
 /******/ ]);
