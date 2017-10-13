@@ -5,7 +5,7 @@ module.exports = {
   entry: "./src/js/app.js",
   output: {
       path: __dirname + '/dist',
-      filename: "app.js"
+      filename: "ajaxCart.js"
   },
   module: {
     rules: [

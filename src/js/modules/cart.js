@@ -108,11 +108,11 @@ const AjaxCart = {
     var currentQuantity = currentQuantity;
     var availableQuantity = availableQuantity;
 
-    if ( (currentQuantity == 1) && (action == 'subtract') ) {
+    if ( (currentQuantity == 1) && (action == 'decrease') ) {
       // INVOKE REMOVE FROM CART
       return AjaxCart.removeFromCart(variantId);
 
-    } else if ( (currentQuantity > 1) && (action == 'subtract') ) {
+    } else if ( (currentQuantity > 1) && (action == 'decrease') ) {
       // UPDATE CART QUANTITY
       currentQuantity--;
       return AjaxCart.changeQuantity(variantId, currentQuantity);

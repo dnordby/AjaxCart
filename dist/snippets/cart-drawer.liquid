@@ -9,7 +9,13 @@
 			<p class="js-visual-quantity">Quantity: {{ item.quantity }}</p>
 			<p>Unit Price: {{ item.price | money }}</p>
 			<p class="js-total-price">Total Price: {{ item.line_price | money }}</p>
-			<p class="js-subtract pointer js-update" data-action="subtract">SUBTRACT</p>
+
+			{% comment %}
+					AjaxCart listens for an "increase" or "decrease" action to change cart values.
+					The data attributes below are not essential, but help when specifying which
+					button was clicked. See /src/js/pages/product.js for specifics (line 86).
+			{% endcomment %}
+			<p class="js-subtract pointer js-update" data-action="decrease">SUBTRACT</p>
 			<p class="js-add pointer js-update" data-action="increase">ADD</p>
 			<p class="js-remove pointer">REMOVE</p>
 		</div>
