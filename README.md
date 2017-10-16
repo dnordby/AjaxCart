@@ -18,7 +18,7 @@ Shopify project to add/remove/update items to cart.
 
 ##### JS
 
-* From the `/dist/js` directory, include `ajaxCart.js` in project asset pipeline. Either include it directly in the `<head>` (`<script src="/javascripts/ajaxCart.js" type="text/javascript"></script>`) or add to the pipeline of file that is compiled (using webpack, or other).
+* From the `/dist/js` directory, include `ajaxCart.js` in project asset pipeline. Either include it directly in the `<head>` (`<script src="/javascripts/ajaxCart.js" type="text/javascript"></script>`) or add compiled pipeline path (via webpack, or similar).
 
 
 #### USAGE
