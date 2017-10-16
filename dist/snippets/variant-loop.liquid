@@ -6,7 +6,8 @@
 <div id="product-variants" class="{% if hide_default_title %} hidden{% endif %}">
   <select id="product-select" name="id">
     {% for variant in product.variants %}
-      <option{% if variant == product.selected_or_first_available_variant %} selected{% endif %} value="{{ variant.id }}">
+      <option{% if variant == product.selected_or_first_available_variant %} selected{% endif %} value="{{ variant.id }}" data-quantity="{{ variant.inventory_quantity
+ }}">
         {{ variant.title }} - {{ variant.price | money }}
       </option>
     {% endfor %}
