@@ -5,7 +5,7 @@ const AjaxCart = {
 
   // ADD ITEM TO CART
   // RETURN ERROR, OR CART OBJECT
-  addToCart(form, button = $('form').find('input[type=submit]'), fn) {
+  addToCart(form, button = $(form).find('input[type=submit]'), fn) {
     var button = button;
     var cartForm = $(form).serialize();
     var completedText = $(button).attr('value');
@@ -30,9 +30,13 @@ const AjaxCart = {
     }
 
     $.when(cart, product).done(function(cartData, productData){
-      fn(cartData);
+      if (fn) {
+        fn(cartData);
+      }
     }).fail(function(error){
-      fn(error.responseJSON.description);
+      if (fn) {
+        fn(error.responseJSON.description);
+      }
     });
 
     $(button).attr('value', completedText).prop('disabled', false);

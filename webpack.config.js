@@ -4,7 +4,7 @@ let ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   entry: "./src/js/app.js",
   output: {
-      path: __dirname + '/dist',
+      path: __dirname + '/dist/js',
       filename: "ajaxCart.js"
   },
   module: {
