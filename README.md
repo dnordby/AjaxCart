@@ -33,8 +33,8 @@ AjaxCart currently has 4 main methods:
 
 For complete examples of each, see `/dist/js/product.js`. Note that AjaxCart does not handle visual/theme updates to the cart. It rerutns cart objects or errors, but it does not adjust prices or quantities, remove line items, or otherwise update the cart without a page refresh: any updates must be made by the theme developer. `/dist/js/product.js` can be used as an example/template as to how events/return values can be handled.
 
-##### `.addToCart(form, button = $(form).find('input[type=submit]'), fn)`
 ---
+##### `.addToCart(form, button = $(form).find('input[type=submit]'), fn)`
 
 **Returns updated cart object or errors.**
 
@@ -55,9 +55,8 @@ AjaxCart.addToCart(form, $(button), function(cartOrError){
 });
 ```
 
-
-##### `.getCart()`
 ---
+##### `.getCart()`
 
 **Returns the cart object.**
 
@@ -68,8 +67,8 @@ console.log(getCart);
 ```
 
 
-##### `.removeFromCart(variantId)`
 ---
+##### `.removeFromCart(variantId)`
 
 **Removes all quantities of the specified variant ID from the cart. Returns the cart object once the applicable products have been removed.**
 
@@ -81,8 +80,8 @@ console.log(updatedCart);
 
 
 
-##### `.updateQuantity(action, variantId, currentQuantity, availableQuantity)`
 ---
+##### `.updateQuantity(action, variantId, currentQuantity, availableQuantity)`
 
 **Returns updated cart or errors**
 
