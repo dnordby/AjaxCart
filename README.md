@@ -36,7 +36,7 @@ For complete examples of each, see `/dist/js/product.js`. Note that AjaxCart doe
 ---
 ##### Add to cart - `.addToCart(form, button = $(form).find('input[type=submit]'), fn)`
 
-**Returns updated cart object or errors.**
+##### _Returns updated cart object or errors._
 
 Required paramaters:
 * Form
@@ -58,7 +58,7 @@ AjaxCart.addToCart(form, $(button), function(cartOrError){
 ---
 ##### Get cart - `.getCart()`
 
-**Returns the cart object.**
+##### _Returns the cart object._
 
 Example usage:
 ```
@@ -70,7 +70,7 @@ console.log(getCart);
 ---
 ##### Remove variant from cart - `.removeFromCart(variantId)`
 
-**Removes all quantities of the specified variant ID from the cart. Returns the cart object once the applicable products have been removed.**
+##### _Removes all quantities of the specified variant ID from the cart. Returns the cart object once the applicable products have been removed._
 
 Example usage:
 ```
@@ -83,7 +83,7 @@ console.log(updatedCart);
 ---
 ##### Update variant quantity - `.updateQuantity(action, variantId, currentQuantity, availableQuantity)`
 
-**Returns updated cart or errors**
+##### _Returns updated cart or errors._
 
 Required paramaters:
 * Update action - string, must be either 'increase' or 'decrease'
